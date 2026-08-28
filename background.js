@@ -7,8 +7,31 @@ async function обновитьЗначок() {
   const вкладки = await chrome.tabs.query({});
   const n = лишниеВкладки(группыВкладок(вкладки, н)).length;
   await chrome.action.setBadgeText({ text: n ? String(n) : "" });
-  await chrome.action.setBadgeBackgroundColor({ color: "#c0392b" });
+  // Тёмный фон, а не красный: иконка сама красная, число на ней терялось.
+  await chrome.action.setBadgeBackgroundColor({ color: "#1f1f1f" });
+  if (chrome.action.setBadgeTextColor) {
+    await chrome.action.setBadgeTextColor({ color: "#ffffff" });
+  }
 }
+
+// Считаем сразу, как только фоновый процесс ожил. Chrome в третьем манифесте
+// усыпляет его через полминуты; без этой строки после перезапуска браузера
+// значок оставался пустым, пока Антон не тронет какую-нибудь вкладку.
+обновитьЗначок();
+
+// Будильник - на случай, когда событий нет вовсе: вкладки открыты, браузер
+// стоит, процесс спит. Минута - минимальный период, который Chrome разрешает.
+chrome.alarms.create("пересчёт", { periodInMinutes: 1 });
+chrome.alarms.onAlarm.addListener((с) => {
+  if (с.name === "пересчёт") обновитьЗначок();
+});
+
+// Дешёвые поводы пересчитать: переключение вкладки и окна, перенос вкладки
+// между окнами. Каждый из них будит процесс и стоит одного запроса к Chrome.
+chrome.tabs.onActivated.addListener(обновитьЗначок);
+chrome.tabs.onAttached.addListener(обновитьЗначок);
+chrome.tabs.onDetached.addListener(обновитьЗначок);
+chrome.windows.onFocusChanged.addListener(обновитьЗначок);
 
 chrome.tabs.onCreated.addListener((в) => {
   обновитьЗначок();
