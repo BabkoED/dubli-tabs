@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Дубли",
+  "version": "1.1",
+  "description": "Одинаковые вкладки и закладки в одном месте. Тикеты Redmine считает по номеру, а не по строке адреса.",
+  "permissions": ["tabs", "bookmarks", "storage", "scripting", "notifications"],
+  "optional_host_permissions": ["*://*/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Дубли",
+    "default_icon": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png" }
+  },
+  "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png", "128": "icon128.png" },
+  "commands": {
+    "collapse-duplicates": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Схлопнуть дубли вкладок"
+    }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <nav class="вкл">
+    <button data-раздел="вкладки" class="активна">Вкладки</button>
+    <button data-раздел="закладки">Закладки</button>
+    <button data-раздел="настройки" title="Настройки">⚙</button>
+  </nav>
+
+  <section id="вкладки">
+    <div class="строка">
+      <span id="итог-вкладки" class="итог">Считаю…</span>
+      <button id="схлопнуть" class="главная" disabled>Схлопнуть все</button>
+    </div>
+    <div id="список-вкладки"></div>
+  </section>
+
+  <section id="закладки" hidden>
+    <div class="строка">
+      <select id="папка"></select>
+      <button id="искать">Найти</button>
+    </div>
+    <div class="строка">
+      <button id="сложить">Сложить вкладки сюда и закрыть</button>
+    </div>
+    <div id="итог-закладки" class="итог">Выберите папку.</div>
+    <div id="список-закладки"></div>
+    <button id="убрать" class="главная" hidden>Перенести лишние в «Дубли»</button>
+    <p class="сноска">Закладки не удаляются: лишние уезжают в подпапку «Дубли»
+      внутри той же папки. Удалить оттуда можно руками, когда убедитесь.</p>
+  </section>
+
+  <section id="настройки" hidden>
+    <label><input type="checkbox" id="н-тикеты">
+      Тикеты по номеру: <code>/issues/12345</code> - один тикет с любым хвостом</label>
+    <label><input type="checkbox" id="н-якорь">
+      Не считать <code>#note-7</code> отдельной ссылкой</label>
+    <label><input type="checkbox" id="н-www">
+      Не различать <code>www.</code></label>
+    <label>Параметры, которые игнорируем (через запятую):
+      <input type="text" id="н-мусор"></label>
+    <hr>
+    <label><input type="checkbox" id="н-перехват">
+      Не давать открыть второй раз: уводить на уже открытую вкладку</label>
+    <label><input type="checkbox" id="н-предупреждать">
+      Предупреждать, если закладку на этот тикет уже сохраняли</label>
+    <label><input type="checkbox" id="н-только-тикеты">
+      «Сложить вкладки» берёт только тикеты, а не всё подряд</label>
+    <div class="строка">
+      <button id="клавиши">Горячая клавиша</button>
+      <span class="итог">по умолчанию Alt+Shift+D</span>
+    </div>
+    <hr>
+    <label><input type="checkbox" id="н-подсветка">
+      Помечать на странице ссылки, уже открытые во вкладках</label>
+    <label>Хост, где помечать:
+      <input type="text" id="н-хост" placeholder="redmine.example.com"></label>
+    <div class="строка">
+      <button id="разрешить">Выдать доступ к хосту</button>
+      <span id="статус-доступа" class="итог"></span>
+    </div>
+    <p class="сноска">Доступ к странице нужен только для пометок. Расширение
+      ничего никуда не отправляет: всё считается внутри браузера.</p>
+  </section>
+
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
