@@ -17,6 +17,10 @@ if (!fs.existsSync(path.join(РАСШ, "manifest.json"))) {
 
 function найтиPlaywright() {
   if (process.env.PLAYWRIGHT) return process.env.PLAYWRIGHT;
+  // Своя закреплённая версия (package.json) - первой: браузер в общем кеше
+  // держится только за ту версию, что его поставила, чужая из npx его теряет.
+  const свой = path.resolve(здесь, "..", "node_modules", "playwright", "index.mjs");
+  if (fs.existsSync(свой)) return свой;
   const кеш = path.join(process.env.HOME || "", ".npm", "_npx");
   if (fs.existsSync(кеш)) {
     for (const д of fs.readdirSync(кеш)) {
