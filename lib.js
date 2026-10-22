@@ -38,14 +38,17 @@ export function ключ(адрес, н) {
   }
   if (u.protocol !== "http:" && u.protocol !== "https:") return null;
 
-  let хост = u.hostname.toLowerCase();
+  // host, а не hostname: localhost:3000 и localhost:8080 - разные приложения.
+  let хост = u.host.toLowerCase();
   if (н.безWww) хост = хост.replace(/^www\./, "");
 
   // Тикет узнаём по номеру. Ровно ради этого всё и затевалось: один тикет
   // приходит как /issues/12345, /issues/12345#note-7 и /issues/12345?tab=history.
+  // Путь ДО /issues входит в ключ: у Redmine он пустой, а у GitHub и GitLab
+  // это репозиторий - задача 5 в двух репозиториях не одна и та же.
   if (н.тикеты) {
-    const m = u.pathname.match(/\/issues\/(\d+)/);
-    if (m) return `${хост} | тикет ${m[1]}`;
+    const m = u.pathname.match(/^(.*?)\/issues\/(\d+)(?=[/.]|$)/);
+    if (m) return `${хост}${m[1]} | тикет ${m[2]}`;
   }
 
   const путь = u.pathname.replace(/\/+$/, "") || "/";
@@ -54,7 +57,11 @@ export function ключ(адрес, н) {
     .sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
     .map(([k, v]) => `${k}=${v}`);
   const хвост = пары.length ? "?" + пары.join("&") : "";
-  const якорь = н.безЯкоря ? "" : u.hash;
+  // Якорь бывает двух родов. #note-7 или #section - место на той же странице,
+  // адрес он не меняет. А #inbox/письмо, #/маршрут или #12345 в Telegram -
+  // адрес внутри приложения: склеить их значит закрыть другое письмо или чат.
+  const маршрут = /[/!=@]/.test(u.hash) || /^#\d/.test(u.hash);
+  const якорь = н.безЯкоря && !маршрут ? "" : u.hash;
   return `${хост}${путь}${хвост}${якорь}`;
 }
 
