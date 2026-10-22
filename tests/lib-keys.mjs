@@ -50,6 +50,15 @@ for (const хвост of ["#note-7", "?tab=history", "/edit", "/relations", ".js
 проверка("обычный якорь страницы не делает адрес другим",
          один("https://docs.test/page", "https://docs.test/page#section-2"));
 
+проверка("Telegram: две группы с отрицательным id - разные",
+         !один("https://web.telegram.org/a/#-1001234567890", "https://web.telegram.org/a/#-1009876543210"));
+проверка("выделение текста (#:~:text=) не делает адрес другим",
+         один("https://docs.test/page", "https://docs.test/page#:~:text=abc"));
+проверка("якорь #1-intro - место на странице, а не маршрут",
+         один("https://docs.test/page", "https://docs.test/page#1-intro"));
+проверка("GitLab: старый адрес без /-/ - та же задача",
+         один("https://gitlab.com/g/p/issues/9", "https://gitlab.com/g/p/-/issues/9"));
+
 проверка("разные порты - разные",
          !один("http://localhost:3000/", "http://localhost:8080/"));
 проверка("порт по умолчанию не мешает", один("https://example.com:443/x", "https://example.com/x"));
